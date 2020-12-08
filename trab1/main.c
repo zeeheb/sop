@@ -16,17 +16,45 @@ sem_t mutex;
 #define MAX 2000
 #define NTHREADS 4
 
+typedef struct
+{
+  int idx
+} thread_arg, *ptr_thread_arg;
+
 long aux;
 
-void *buscaNaMatriz(void *argp)
+void *buscaNaMatriz(void *arg)
 {
+
+  int *n = (int *)arg;
   long i;
-  for (i = 0; i < MAX; i++)
+
+  switch (*n)
   {
-    down(&mutex);
-    aux++; /* r1 <- n ; add r1, 1 ; n <- r1 */
-    up(&mutex);
+  case 1:
+    printf("1");
+    break;
+  case 2:
+    printf("2");
+    break;
+  case 3:
+    printf("3");
+    break;
+
+  case 4:
+    printf("4");
+    break;
+  default:
+    break;
   }
+
+  // for (i = 0; i < MAX; i++)
+  // {
+  //   down(&mutex);
+  //   aux++; /* r1 <- n ; add r1, 1 ; n <- r1 */
+  //   up(&mutex);
+  // }
+  printf("\n");
   pthread_exit(NULL);
 }
 
@@ -44,7 +72,9 @@ int getMax(int a, int b)
 
 int main(int argc, char *argv[])
 {
-  pthread_t t1, t2, t3, t4;
+  // pthread_t t1, t2, t3, t4;
+  pthread_t threads[4];
+  thread_arg arguments[4];
   int rc;
 
   // le args
@@ -76,7 +106,7 @@ int main(int argc, char *argv[])
   }
 
   // rearrranjo
-  int max = getMax(m, n);
+  // int max = getMax(m, n);
   srand(time(NULL));
 
   for (int i = 0; i < m; i++)
@@ -96,34 +126,29 @@ int main(int argc, char *argv[])
 
   // print matriz
 
-  for (int i = 0; i < m; i++)
-  {
-    for (int j = 0; j < n; j++)
-    {
-      printf(" %d ", mat[i][j]);
-    }
-    printf("\n");
-  }
+  // for (int i = 0; i < m; i++)
+  // {
+  //   for (int j = 0; j < n; j++)
+  //   {
+  //     printf(" %d ", mat[i][j]);
+  //   }
+  //   printf("\n");
+  // }
 
   aux = 0;
   sem_init(&mutex, 0, 1); /* mutex = 1 */
-  rc = pthread_create(&t1, NULL, buscaNaMatriz, NULL);
-  assert(rc == 0);
-  rc = pthread_create(&t2, NULL, buscaNaMatriz, NULL);
-  assert(rc == 0);
-  rc = pthread_create(&t3, NULL, buscaNaMatriz, NULL);
-  assert(rc == 0);
-  rc = pthread_create(&t4, NULL, buscaNaMatriz, NULL);
-  assert(rc == 0);
-  rc = pthread_join(t1, NULL);
-  assert(rc == 0);
-  rc = pthread_join(t2, NULL);
-  assert(rc == 0);
-  rc = pthread_join(t3, NULL);
-  assert(rc == 0);
-  rc = pthread_join(t4, NULL);
-  assert(rc == 0);
-  printf("%ld\n", aux);
+
+  for (int i = 0; i < NTHREADS; i++)
+  {
+    arguments[i].idx = i + 1;
+    pthread_create(&(threads[i]), NULL, buscaNaMatriz, &(arguments[i]));
+  }
+
+  for (int i = 0; i < NTHREADS; i++)
+  {
+    pthread_join(threads[i], NULL);
+  }
+
   return 0;
 }
 
