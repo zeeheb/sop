@@ -16,31 +16,19 @@ sem_t mutex;
 #define MAX 2000
 #define NTHREADS 4
 
-// long aux;
+long aux;
 
-// void *f1(void *argp)
-// {
-//   long i;
-//   for (i = 0; i < MAX; i++)
-//   {
-//     down(&mutex);
-//     n++; /* r1 <- n ; add r1, 1 ; n <- r1 */
-//     up(&mutex);
-//   }
-//   pthread_exit(NULL);
-// }
-
-// void *f2(void *argp)
-// {
-//   long i;
-//   for (i = 0; i < MAX; i++)
-//   {
-//     down(&mutex);
-//     n--;
-//     up(&mutex);
-//   }
-//   pthread_exit(NULL);
-// }
+void *buscaNaMatriz(void *argp)
+{
+  long i;
+  for (i = 0; i < MAX; i++)
+  {
+    down(&mutex);
+    aux++; /* r1 <- n ; add r1, 1 ; n <- r1 */
+    up(&mutex);
+  }
+  pthread_exit(NULL);
+}
 
 int getMax(int a, int b)
 {
@@ -117,25 +105,25 @@ int main(int argc, char *argv[])
     printf("\n");
   }
 
-  // aux = 0;
-  // sem_init(&mutex, 0, 1); /* mutex = 1 */
-  // rc = pthread_create(&t1, NULL, f1, NULL);
-  // assert(rc == 0);
-  // rc = pthread_create(&t2, NULL, f2, NULL);
-  // assert(rc == 0);
-  // rc = pthread_create(&t3, NULL, f2, NULL);
-  // assert(rc == 0);
-  // rc = pthread_create(&t4, NULL, f2, NULL);
-  // assert(rc == 0);
-  // rc = pthread_join(t1, NULL);
-  // assert(rc == 0);
-  // rc = pthread_join(t2, NULL);
-  // assert(rc == 0);
-  // rc = pthread_join(t3, NULL);
-  // assert(rc == 0);
-  // rc = pthread_join(t4, NULL);
-  // assert(rc == 0);
-  // printf("%ld\n", aux);
+  aux = 0;
+  sem_init(&mutex, 0, 1); /* mutex = 1 */
+  rc = pthread_create(&t1, NULL, buscaNaMatriz, NULL);
+  assert(rc == 0);
+  rc = pthread_create(&t2, NULL, buscaNaMatriz, NULL);
+  assert(rc == 0);
+  rc = pthread_create(&t3, NULL, buscaNaMatriz, NULL);
+  assert(rc == 0);
+  rc = pthread_create(&t4, NULL, buscaNaMatriz, NULL);
+  assert(rc == 0);
+  rc = pthread_join(t1, NULL);
+  assert(rc == 0);
+  rc = pthread_join(t2, NULL);
+  assert(rc == 0);
+  rc = pthread_join(t3, NULL);
+  assert(rc == 0);
+  rc = pthread_join(t4, NULL);
+  assert(rc == 0);
+  printf("%ld\n", aux);
   return 0;
 }
 
