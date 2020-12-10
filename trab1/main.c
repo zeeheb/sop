@@ -43,8 +43,8 @@ void *buscaNaMatriz(void *arg)
         {
           if (mat[i][j] == search)
           {
-            achou = 1;
-            printf("achou em [%d] [%d]\n", i + 1, j + 1);
+            achou = 0;
+            printf("achou case 1 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
       }
@@ -52,10 +52,20 @@ void *buscaNaMatriz(void *arg)
     // printf("1");
     break;
   case 2:
-    // while (!achou)
-    // {
-    // }
-    // printf("2");
+    while (!achou)
+    {
+      for (int i = 0; i < lin; i++)
+      {
+        for (int j = col - 1; j >= 0; j--)
+        {
+          if (mat[i][j] == search)
+          {
+            achou = 1;
+            printf("achou case 2 em [%d] [%d]\n", i + 1, j + 1);
+          }
+        }
+      }
+    }
     break;
   case 3:
     // while (!achou)
