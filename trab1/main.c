@@ -23,8 +23,11 @@ typedef struct
 
 long aux;
 int roundA, lin, col, search;
+int count1 = 0, count2 = 0, count3 = 0, count4 = 0;
 int **mat;
 int achou = 0;
+pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
+pthread_barrier_t barr;
 
 void *buscaNaMatriz(void *arg)
 {
@@ -36,6 +39,8 @@ void *buscaNaMatriz(void *arg)
   {
   case 1:
     // sleep(1);
+    pthread_barrier_wait(&barr);
+
     while (achou != 1)
     {
       for (int i = 0; i < lin; i++)
@@ -44,8 +49,11 @@ void *buscaNaMatriz(void *arg)
         {
           if (mat[i][j] == search)
           {
+            pthread_mutex_lock(&mtx);
             achou = 1;
-            printf("Achou no 1\n");
+            count1++;
+            pthread_mutex_unlock(&mtx);
+            // printf("Achou no 1\n");
             // printf("achou case 1 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
@@ -55,6 +63,8 @@ void *buscaNaMatriz(void *arg)
     break;
   case 2:
     // sleep(1);
+    pthread_barrier_wait(&barr);
+
     while (achou != 1)
     {
       for (int i = 0; i < lin; i++)
@@ -63,8 +73,11 @@ void *buscaNaMatriz(void *arg)
         {
           if (mat[i][j] == search)
           {
+            pthread_mutex_lock(&mtx);
             achou = 1;
-            printf("Achou no 2\n");
+            count2++;
+            pthread_mutex_unlock(&mtx);
+            // printf("Achou no 2\n");
             // printf("achou case 2 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
@@ -72,6 +85,8 @@ void *buscaNaMatriz(void *arg)
     }
     break;
   case 3:
+    pthread_barrier_wait(&barr);
+
     while (achou != 1)
     {
       for (int i = lin - 1; i >= 0; i--)
@@ -80,8 +95,11 @@ void *buscaNaMatriz(void *arg)
         {
           if (mat[i][j] == search)
           {
+            pthread_mutex_lock(&mtx);
             achou = 1;
-            printf("Achou no 3\n");
+            count3++;
+            pthread_mutex_unlock(&mtx);
+            // printf("Achou no 3\n");
             // printf("achou case 3 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
@@ -90,6 +108,8 @@ void *buscaNaMatriz(void *arg)
     break;
 
   case 4:
+    pthread_barrier_wait(&barr);
+
     while (achou != 1)
     {
       for (int i = lin - 1; i >= 0; i--)
@@ -98,8 +118,11 @@ void *buscaNaMatriz(void *arg)
         {
           if (mat[i][j] == search)
           {
+            pthread_mutex_lock(&mtx);
             achou = 1;
-            printf("Achou no 4\n");
+            count4++;
+            pthread_mutex_unlock(&mtx);
+            // printf("Achou no 4\n");
             // printf("achou case 4 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
@@ -199,9 +222,9 @@ int main(int argc, char *argv[])
   //   printf("\n");
   // }
 
+  srand(time(NULL));
   for (int i = 0; i < r; i++)
   {
-    srand(time(NULL));
 
     // cria número aleatorio para procurar
     search = rand() % (m * n - 1);
@@ -212,6 +235,8 @@ int main(int argc, char *argv[])
     aux = 0;
     sem_init(&mutex, 0, 1); /* mutex = 1 */
     achou = 0;
+
+    pthread_barrier_init(&barr, NULL, NTHREADS);
     for (int i = 0; i < NTHREADS; i++)
     {
       arguments[i].idx = i + 1;
@@ -223,6 +248,12 @@ int main(int argc, char *argv[])
       pthread_join(threads[i], NULL);
     }
   }
+
+  // printa resultado
+  printf("thread 1 => %d vitórias \n", count1);
+  printf("thread 2 => %d vitórias \n", count2);
+  printf("thread 3 => %d vitórias \n", count3);
+  printf("thread 4 => %d vitórias \n", count4);
 
   return 0;
 }
