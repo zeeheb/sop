@@ -38,7 +38,6 @@ void *buscaNaMatriz(void *arg)
   switch (*n)
   {
   case 1:
-    // sleep(1);
     pthread_barrier_wait(&barr);
 
     while (achou != 1)
@@ -50,19 +49,18 @@ void *buscaNaMatriz(void *arg)
           if (mat[i][j] == search)
           {
             pthread_mutex_lock(&mtx);
-            achou = 1;
-            count1++;
+            if (achou == 0)
+            {
+              achou = 1;
+              count1++;
+            }
             pthread_mutex_unlock(&mtx);
-            // printf("Achou no 1\n");
-            // printf("achou case 1 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
       }
     }
-    // printf("1");
     break;
   case 2:
-    // sleep(1);
     pthread_barrier_wait(&barr);
 
     while (achou != 1)
@@ -74,11 +72,13 @@ void *buscaNaMatriz(void *arg)
           if (mat[i][j] == search)
           {
             pthread_mutex_lock(&mtx);
-            achou = 1;
-            count2++;
+
+            if (achou == 0)
+            {
+              achou = 1;
+              count2++;
+            }
             pthread_mutex_unlock(&mtx);
-            // printf("Achou no 2\n");
-            // printf("achou case 2 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
       }
@@ -96,11 +96,12 @@ void *buscaNaMatriz(void *arg)
           if (mat[i][j] == search)
           {
             pthread_mutex_lock(&mtx);
-            achou = 1;
-            count3++;
+            if (achou == 0)
+            {
+              achou = 1;
+              count3++;
+            }
             pthread_mutex_unlock(&mtx);
-            // printf("Achou no 3\n");
-            // printf("achou case 3 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
       }
@@ -119,11 +120,12 @@ void *buscaNaMatriz(void *arg)
           if (mat[i][j] == search)
           {
             pthread_mutex_lock(&mtx);
-            achou = 1;
-            count4++;
+            if (achou == 0)
+            {
+              achou = 1;
+              count4++;
+            }
             pthread_mutex_unlock(&mtx);
-            // printf("Achou no 4\n");
-            // printf("achou case 4 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
       }
@@ -133,26 +135,7 @@ void *buscaNaMatriz(void *arg)
     break;
   }
 
-  // for (i = 0; i < MAX; i++)
-  // {
-  //   down(&mutex);
-  //   aux++; /* r1 <- n ; add r1, 1 ; n <- r1 */
-  //   up(&mutex);
-  // }
-  // printf("\n");
   pthread_exit(NULL);
-}
-
-int getMax(int a, int b)
-{
-  if (a >= b)
-  {
-    return a;
-  }
-  else
-  {
-    return b;
-  }
 }
 
 int main(int argc, char *argv[])
@@ -193,7 +176,6 @@ int main(int argc, char *argv[])
   }
 
   // rearrranjo
-  // int max = getMax(m, n);
   srand(time(NULL));
 
   for (int i = 0; i < m; i++)
