@@ -33,7 +33,6 @@ void *buscaNaMatriz(void *arg)
 {
 
   int *n = (int *)arg;
-  long i;
 
   switch (*n)
   {
@@ -143,7 +142,6 @@ int main(int argc, char *argv[])
   // pthread_t t1, t2, t3, t4;
   pthread_t threads[4];
   thread_arg arguments[4];
-  int rc;
 
   // le args
 
@@ -214,8 +212,6 @@ int main(int argc, char *argv[])
 
     // printf("search: %d\n", search);
 
-    aux = 0;
-    sem_init(&mutex, 0, 1); /* mutex = 1 */
     achou = 0;
 
     pthread_barrier_init(&barr, NULL, NTHREADS);
@@ -232,11 +228,26 @@ int main(int argc, char *argv[])
   }
 
   // printa resultado
-  printf("thread 1 => %d vitórias \n", count1);
+  printf("\nthread 1 => %d vitórias \n", count1);
   printf("thread 2 => %d vitórias \n", count2);
   printf("thread 3 => %d vitórias \n", count3);
   printf("thread 4 => %d vitórias \n", count4);
 
+  printf("------------------------\n");
+  printf("Thread vencedora: ");
+
+  //check winner
+
+  if ((count1 > count2) && (count1 > count3) && (count1 > count4))
+    printf("1\n\n");
+  else if ((count2 > count1) && (count2 > count3) && (count2 > count4))
+    printf("2\n\n");
+  else if ((count3 > count2) && (count3 > count1) && (count3 > count4))
+    printf("3\n\n");
+  else if ((count4 > count2) && (count4 > count3) && (count4 > count1))
+    printf("4\n\n");
+  else
+    (printf("Empate!\n\n"));
   return 0;
 }
 
