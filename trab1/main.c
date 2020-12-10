@@ -22,6 +22,9 @@ typedef struct
 } thread_arg, *ptr_thread_arg;
 
 long aux;
+int roundA, lin, col, search;
+int **mat;
+int achou = 0;
 
 void *buscaNaMatriz(void *arg)
 {
@@ -32,17 +35,40 @@ void *buscaNaMatriz(void *arg)
   switch (*n)
   {
   case 1:
-    printf("1");
+    while (!achou)
+    {
+      for (int i = 0; i < lin; i++)
+      {
+        for (int j = 0; j < col; j++)
+        {
+          if (mat[i][j] == search)
+          {
+            achou = 1;
+            printf("achou em [%d] [%d]\n", i + 1, j + 1);
+          }
+        }
+      }
+    }
+    // printf("1");
     break;
   case 2:
-    printf("2");
+    // while (!achou)
+    // {
+    // }
+    // printf("2");
     break;
   case 3:
-    printf("3");
+    // while (!achou)
+    // {
+    // }
+    // printf("3");
     break;
 
   case 4:
-    printf("4");
+    // while (!achou)
+    // {
+    // }
+    // printf("4");
     break;
   default:
     break;
@@ -54,7 +80,7 @@ void *buscaNaMatriz(void *arg)
   //   aux++; /* r1 <- n ; add r1, 1 ; n <- r1 */
   //   up(&mutex);
   // }
-  printf("\n");
+  // printf("\n");
   pthread_exit(NULL);
 }
 
@@ -82,10 +108,12 @@ int main(int argc, char *argv[])
   int m = atoi(argv[1]);
   int n = atoi(argv[2]);
   int r = atoi(argv[3]);
+  lin = m;
+  col = n;
 
   //constroi matriz
 
-  int **mat;
+  // int **mat;
 
   mat = malloc(m * sizeof(int *));
 
@@ -126,14 +154,20 @@ int main(int argc, char *argv[])
 
   // print matriz
 
-  // for (int i = 0; i < m; i++)
-  // {
-  //   for (int j = 0; j < n; j++)
-  //   {
-  //     printf(" %d ", mat[i][j]);
-  //   }
-  //   printf("\n");
-  // }
+  for (int i = 0; i < m; i++)
+  {
+    for (int j = 0; j < n; j++)
+    {
+      printf(" %d ", mat[i][j]);
+    }
+    printf("\n");
+  }
+
+  // cria número aleatorio para procurar
+  search = rand() % (m * n - 1);
+  search++;
+
+  printf("search: %d\n", search);
 
   aux = 0;
   sem_init(&mutex, 0, 1); /* mutex = 1 */
