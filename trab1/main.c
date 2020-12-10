@@ -35,7 +35,8 @@ void *buscaNaMatriz(void *arg)
   switch (*n)
   {
   case 1:
-    while (!achou)
+    // sleep(1);
+    while (achou != 1)
     {
       for (int i = 0; i < lin; i++)
       {
@@ -43,8 +44,9 @@ void *buscaNaMatriz(void *arg)
         {
           if (mat[i][j] == search)
           {
-            achou = 0;
-            printf("achou case 1 em [%d] [%d]\n", i + 1, j + 1);
+            achou = 1;
+            printf("Achou no 1\n");
+            // printf("achou case 1 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
       }
@@ -52,7 +54,8 @@ void *buscaNaMatriz(void *arg)
     // printf("1");
     break;
   case 2:
-    while (!achou)
+    // sleep(1);
+    while (achou != 1)
     {
       for (int i = 0; i < lin; i++)
       {
@@ -61,24 +64,47 @@ void *buscaNaMatriz(void *arg)
           if (mat[i][j] == search)
           {
             achou = 1;
-            printf("achou case 2 em [%d] [%d]\n", i + 1, j + 1);
+            printf("Achou no 2\n");
+            // printf("achou case 2 em [%d] [%d]\n", i + 1, j + 1);
           }
         }
       }
     }
     break;
   case 3:
-    // while (!achou)
-    // {
-    // }
-    // printf("3");
+    while (achou != 1)
+    {
+      for (int i = lin - 1; i >= 0; i--)
+      {
+        for (int j = 0; j < col; j++)
+        {
+          if (mat[i][j] == search)
+          {
+            achou = 1;
+            printf("Achou no 3\n");
+            // printf("achou case 3 em [%d] [%d]\n", i + 1, j + 1);
+          }
+        }
+      }
+    }
     break;
 
   case 4:
-    // while (!achou)
-    // {
-    // }
-    // printf("4");
+    while (achou != 1)
+    {
+      for (int i = lin - 1; i >= 0; i--)
+      {
+        for (int j = col - 1; j >= 0; j--)
+        {
+          if (mat[i][j] == search)
+          {
+            achou = 1;
+            printf("Achou no 4\n");
+            // printf("achou case 4 em [%d] [%d]\n", i + 1, j + 1);
+          }
+        }
+      }
+    }
     break;
   default:
     break;
@@ -164,33 +190,38 @@ int main(int argc, char *argv[])
 
   // print matriz
 
-  for (int i = 0; i < m; i++)
+  // for (int i = 0; i < m; i++)
+  // {
+  //   for (int j = 0; j < n; j++)
+  //   {
+  //     printf(" %d ", mat[i][j]);
+  //   }
+  //   printf("\n");
+  // }
+
+  for (int i = 0; i < r; i++)
   {
-    for (int j = 0; j < n; j++)
+    srand(time(NULL));
+
+    // cria número aleatorio para procurar
+    search = rand() % (m * n - 1);
+    search++;
+
+    // printf("search: %d\n", search);
+
+    aux = 0;
+    sem_init(&mutex, 0, 1); /* mutex = 1 */
+    achou = 0;
+    for (int i = 0; i < NTHREADS; i++)
     {
-      printf(" %d ", mat[i][j]);
+      arguments[i].idx = i + 1;
+      pthread_create(&(threads[i]), NULL, buscaNaMatriz, &(arguments[i]));
     }
-    printf("\n");
-  }
 
-  // cria número aleatorio para procurar
-  search = rand() % (m * n - 1);
-  search++;
-
-  printf("search: %d\n", search);
-
-  aux = 0;
-  sem_init(&mutex, 0, 1); /* mutex = 1 */
-
-  for (int i = 0; i < NTHREADS; i++)
-  {
-    arguments[i].idx = i + 1;
-    pthread_create(&(threads[i]), NULL, buscaNaMatriz, &(arguments[i]));
-  }
-
-  for (int i = 0; i < NTHREADS; i++)
-  {
-    pthread_join(threads[i], NULL);
+    for (int i = 0; i < NTHREADS; i++)
+    {
+      pthread_join(threads[i], NULL);
+    }
   }
 
   return 0;
