@@ -252,5 +252,4 @@ int main(int argc, char *argv[])
 }
 
 // compile with cc -o main main.c -pthread
-// for i in {1..2000} ; do ./main ; done >logmain
-// sort <logmain | uniq -c
+// ./main 30 40 10

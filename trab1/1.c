@@ -13,16 +13,19 @@
 #define down(x) sem_wait(x)
 #define up(x) sem_post(x)
 
-sem_t sA, sB, sC;
-
+sem_t sA, sB, sC, sM, sD;
+int type = 0;
 
 
 void *a(void *argp)
 {
     while(1) {
-      down(&sC);
+
+
+      down(&sC); // printou CA
       printf("O");
-      up(&sB);
+      up(&sA); // vai printar S
+
     }
      pthread_exit(NULL);
 }
@@ -33,33 +36,27 @@ void *b(void *argp)
     while(1) {
 
       printf("CA");
-      up(&sC);
+
+      up(&sC); // vai printar outra coisa
+
       down(&sB);
       printf("!\n");
     }
-    // up(&sB);
 
-     pthread_exit(NULL);
+    pthread_exit(NULL);
 }
 
 void *c(void *argp)
 {
    while(1) {
-      down(&sC);
-      printf("S");
-      up(&sB);
+     
+     down(&sA); //printou O
+     printf("S");
+     up(&sB);
+
     }
      pthread_exit(NULL);
-}
-
-/* P2 espera P1 
-
-semaphore S = 0;
-
-P1:          P2: 
-  executa      down(&S)
-  up(&S);      executa 
-*/
+}     
 
 int main(void)
 {
@@ -69,6 +66,10 @@ int main(void)
      sem_init(&sA, 0, 0);     
      sem_init(&sB, 0, 0);
      sem_init(&sC, 0, 0);
+     sem_init(&sM, 0, 1);
+     sem_init(&sD, 0, 0);
+
+
      rc = pthread_create(&t1, NULL, a, NULL);   assert(rc == 0);
      rc = pthread_create(&t2, NULL, b, NULL);   assert(rc == 0);
      rc = pthread_create(&t3, NULL, c, NULL);   assert(rc == 0);
